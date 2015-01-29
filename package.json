@@ -1,0 +1,14 @@
+{
+  "name": "static-server",
+  "version": "0.0.1",
+  "description": "this is an example how to create static server with nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+   "dependencies": {
+	"express": "4.5.1"
+   },
+  "author": "ducnguyen",
+  "license": "ISC"
+}
