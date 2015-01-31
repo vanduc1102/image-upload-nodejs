@@ -3,15 +3,24 @@ app.controller('MainCtrl', function ($scope, fileReader) {
 	$scope.images=[];
 	
 	$scope.getFile = function () {
-        fileReader.readAsDataUrl($scope.files, $scope).then(function(imageDataURLs) {
-			for(var i = 0; i < imageDataURLs.length ; i ++){
-				var image ={
-					"url":imageDataURLs[i]
-				};
-				$scope.images.push(image);
-			}    
+        // fileReader.readManyFileAsDataURL($scope.files, $scope).then(function(imageDataURLs) {
+			// for(var i = 0; i < imageDataURLs.length ; i ++){
+				// var image ={
+					// "url":imageDataURLs[i]
+				// };
+				// $scope.images.push(image);
+			// }    
 			
-		});
+		// });
+		for(var i = 0 ; i < $scope.files.length; i ++){
+			var file = $scope.files[i];
+			fileReader.readOneFileAsDataURL(file, $scope).then(function(imageDataURL) {
+				var image ={
+					"url":imageDataURL
+				};
+				$scope.images.push(image);		
+			});
+		}
     };
 });
 app.factory("fileReader",["$q", "$log",function ($q, $log) {
@@ -63,7 +72,8 @@ app.factory("fileReader",["$q", "$log",function ($q, $log) {
 		return $q.all(promises);
 	};
 	return {
-		readAsDataUrl: readManyFileAsDataURL  
+		readManyFileAsDataURL: readManyFileAsDataURL,
+		readOneFileAsDataURL : readOneFileAsDataURL
 	};
 }]);
 app.directive("ngFileSelect",function(){    
