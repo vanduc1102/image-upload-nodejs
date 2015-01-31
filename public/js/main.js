@@ -3,11 +3,14 @@ app.controller('MainCtrl', function ($scope, fileReader) {
 	$scope.images=[];
 	
 	$scope.getFile = function () {
-        fileReader.readAsDataUrl($scope.file, $scope).then(function(imageData) {
-		    var image ={
-				"url":imageData
-			};
-			$scope.images.push(image);
+        fileReader.readAsDataUrl($scope.files, $scope).then(function(imageDataURLs) {
+			for(var i = 0; i < imageDataURLs.length ; i ++){
+				var image ={
+					"url":imageDataURLs[i]
+				};
+				$scope.images.push(image);
+			}    
+			
 		});
     };
 });
@@ -46,24 +49,28 @@ app.factory("fileReader",["$q", "$log",function ($q, $log) {
 		return reader;
 	};
 
-	var readAsDataURL = function (file, scope) {
+	var readOneFileAsDataURL= function (file, scope) {
 		var deferred = $q.defer();
-		 
 		var reader = getReader(deferred, scope);         
 		reader.readAsDataURL(file);
-		 
 		return deferred.promise;
 	};
-
+	var readManyFileAsDataURL = function(files, scope){
+		var promises=[];
+		for(var i = 0 ; i < files.length; i ++){
+			promises.push(readOneFileAsDataURL(files[i], scope));
+		}
+		return $q.all(promises);
+	};
 	return {
-		readAsDataUrl: readAsDataURL  
+		readAsDataUrl: readManyFileAsDataURL  
 	};
 }]);
 app.directive("ngFileSelect",function(){    
   return {
     link: function($scope,el){          
       el.bind("change", function(e){          
-        $scope.file = (e.srcElement || e.target).files[0];
+        $scope.files = (e.srcElement || e.target).files;
         $scope.getFile();
       });          
     }        
