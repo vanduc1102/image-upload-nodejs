@@ -1,8 +1,13 @@
 var app = angular.module('app', []);
 app.controller('MainCtrl', function ($scope, fileReader) {
+	$scope.images=[];
+	
 	$scope.getFile = function () {
-        fileReader.readAsDataUrl($scope.file, $scope).then(function(result) {
-		   $scope.imageSrc = result;
+        fileReader.readAsDataUrl($scope.file, $scope).then(function(imageData) {
+		    var image ={
+				"url":imageData
+			};
+			$scope.images.push(image);
 		});
     };
 });

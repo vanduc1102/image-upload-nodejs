@@ -1,1 +1,18 @@
-.modal-footer {   border-top: 0px; }
+.upload-container{
+	height:350px;
+}
+.image-list{
+	height:200px;
+	overflow:auto;
+	margin-top:10px;
+}
+.image{
+	height:100%;
+	width:auto;
+	display:inline;
+	white-space: nowrap;
+}
+img{
+	height:100%;
+	width:auto;
+}
