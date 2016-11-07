@@ -15,19 +15,15 @@ app.route('/upload')
     var fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', function (fieldname, file, filename) {
-        console.log("Uploading: " + filename);
         if (!fs.existsSync(uploadedDir)){
 		    fs.mkdirSync(uploadedDir);
 		}
-        //Path where image will be uploaded
-        fstream = fs.createWriteStream(uploadedDir + (new Date()).getTime() +"-"+ filename);
-    	fstream.on('open',function(fd){
-	    	file.pipe(fstream);
-	        fstream.on('close', function () {    
-	            console.log("Upload Finished of " + filename);              
-	            res.send({"successful":true});           //where to go next
-	        });   
-        });     
+		var fileName = (new Date()).getTime() +"-"+ filename;
+        fstream = fs.createWriteStream(uploadedDir + fileName);
+	    file.pipe(fstream);
+	    fstream.on('close', function () {                
+	        res.send({"successful":true});
+	    });    
     });
 });
 
