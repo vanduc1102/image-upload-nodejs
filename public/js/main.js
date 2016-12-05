@@ -1,18 +1,19 @@
 var app = angular.module('app', []);
 app.controller('MainCtrl', function ($http ,$scope) {
 	$scope.images=[];
-    $scope.onUpload = function($event){
-    	$http.post('/upload', {
-    		files: $scope.files
-    	},{
-    		headers:{
-    			"content-type": 'multipart/form-data; charset=utf-8',
-    			"accept":'application/json, text/javascript'
-    		}
-    	}).then(function(response){
-    		console.log(response);
-    	},function(error){
-    		console.log(error);
-    	});
+    $scope.onFileUpload = function($event){
+        $event.preventDefault();
+    	var fd = new FormData();    
+        fd.append( 'files', $('#input-image')[0].files );
+        $.ajax({
+          url: '/upload',
+          data: fd,
+          processData: false,
+          contentType: false,
+          type: 'POST',
+          success: function(data){
+            alert(data);
+          }
+        });
     }
 });
