@@ -1,13 +1,60 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
+var session = require('express-session')
 var fs = require('fs');
 var busboy = require('connect-busboy'); 
 var http = require('http');
+var parseurl = require('parseurl')
 const path = require('path');
 var uploadedDir = __dirname + path.sep + 'uploaded'+ path.sep;
 
-app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { 
+  	secure: false,
+  	maxAge:1000*60*60*24 
+  }
+}))
+
+app.post('/login',function(req, res, next){
+
+	if(req.body.username == 'admin' && req.body.password=='123'){
+		req.session.views = 10;
+		req.session.user = req.body.username;
+		res.redirect("/public/index.html");
+	}else{
+		fs.readFile(path.join(__dirname, 'login.html'), (err, data) => {
+		  if (err) throw err;
+		  res.setHeader('content-type', 'text/html');
+		  res.send(data);
+		});
+	}
+});
+
+app.use(function (req, res, next) {
+  var views = req.session.views;
+  var user = req.session.user;
+  if (!user) {
+    //views = req.session.views = {};
+    //res.sendFile();
+    fs.readFile(path.join(__dirname, 'login.html'), (err, data) => {
+	  if (err) throw err;
+	  res.setHeader('content-type', 'text/html');
+	  res.send(data);
+	});
+  }else{
+  	next();
+  }
+})
+
+app.use("/public",express.static(__dirname + '/public'));
 app.use(busboy());
 
 app.post('/upload',function (req, res, next) {

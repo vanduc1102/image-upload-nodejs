@@ -9,7 +9,8 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-busboy": "0.0.2",
-    "express": "4.5.1"
+    "express": "4.5.1",
+    "express-session": "^1.14.2"
   },
   "author": "ducnguyen",
   "license": "ISC"
